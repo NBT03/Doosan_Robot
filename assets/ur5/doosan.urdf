@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<robot
+  name="Doosan_loz">
+  <link
+    name="Base_0">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="3.722" />
+      <inertia
+        ixx="0.011"
+        ixy="-7.19e-06"
+        ixz="-1.94e-06"
+        iyx="-0.00003684"
+        iyy="0"
+        iyz="4.9e-06"
+        izx="-0.00001716"
+        izy="0"
+        izz="0.014" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="m0609_collision/MF0609_0_0.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material
+        name="base_0">
+        <color
+          rgba="0.376 0.376 0.376 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="m0609_collision/MF0609_0_0.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+    <link
+    name="link1">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="7.446" />
+      <inertia ixx="0.039" ixy="2.1e-05" ixz="-3.61e-05" iyy="0.023" iyz="-0.003" izz="0.039"/>
+
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="m0609_collision/MF0609_1_0.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material
+        name="link1">
+        <color
+          rgba="0.376 0.376 0.376 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="m0609_collision/MF0609_1_0.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint1"
+    type="revolute">
+    <origin
+      xyz="0 0 0.1525"
+      rpy="0 0 0" />
+    <parent
+      link="Base_0" />
+    <child
+      link="link1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.167"
+      upper="2.167"
+      effort="30"
+      velocity="1.571" />
+  </joint>
+  <link name="link2">
+	<inertial>
+	  <mass value="10.569"/>
+	  <origin xyz="-1.6e-05 0.189372 0.418558"/>
+      <inertia ixx="0.820" ixy="1.19e-05" ixz="-0.000263" iyy="0.82" iyz="-0.008" izz="0.031"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="m0609_collision/MF0609_2_0.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dr_white"/>
+    </visual>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+		<mesh filename="m0609_collision/MF0609_2_1.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dr_gray">
+        <color rgba="0.490 0.490 0.486 1.0"/>
+      </material>
+	  </visual>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+		<mesh filename="m0609_collision/MF0609_2_2.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dr_white"/>
+    </visual>
+      </link>
+   <joint
+    name="joint2"
+    type="revolute">
+    <origin
+      xyz="0 0.006 0"
+      rpy="0 -1.571 -1.571" />
+    <parent
+      link="link1" />
+    <child
+      link="link2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.167"
+      upper="2.167"
+      effort="30"
+      velocity="1.571" />
+  </joint>
+  <joint name="joint3" type="revolute">
+    <parent link="link2"/>
+    <child link="link3"/>
+    <origin rpy="0 0 1.571" xyz="0.411 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <link name="link3">
+	<inertial>
+	  <mass value="3.614"/>
+	  <origin xyz="6e-06 0.07917 0.781807"/>
+      <inertia ixx="0.012" ixy="-4.38e-06" ixz="-1.2e-06" iyy="0.008" iyz="0.002" izz="0.011"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+		<mesh filename="m0609_collision/MF0609_3_0.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dr_white"/>
+    </visual>
+  </link>
+
+  <joint name="joint4" type="revolute">
+    <parent link="link3"/>
+    <child link="link4"/>
+    <origin rpy="1.571 0 0" xyz="0 -0.368 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <link name="link4">
+	<inertial>
+	  <mass value="3.785"/>
+	  <origin xyz="-2.1e-05 0.12337 1.148"/>
+      <inertia ixx="0.177" ixy="-2.34e-06" ixz="-4.92e-06" iyy="0.161" iyz="-0.05" izz="0.022"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+		<mesh filename="m0609_collision/MF0609_4_0.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dr_white"/>
+    </visual>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+		<mesh filename="m0609_collision/MF0609_4_1.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dr_white">
+        <color rgba="0.941 0.941 0.941 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="joint5" type="revolute">
+    <parent link="link4"/>
+    <child link="link5"/>
+    <origin rpy="-1.571 0 0" xyz="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <link name="link5">
+	<inertial>
+	  <mass value="2.598"/>
+	  <origin xyz="-1.7e-05 0.06662 1.33103"/>
+      <inertia ixx="0.007" ixy="-4.93e-06" ixz="-5.57e-06" iyy="0.004" iyz="-6.64e-05" izz="0.007"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+		<mesh filename="m0609_collision/MF0609_5_0.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dr_white"/>
+    </visual>
+  </link>
+
+  <joint name="joint6" type="revolute">
+    <parent link="link5"/>
+    <child link="link6"/>
+    <origin rpy="1.571 0 0" xyz="0 -0.121 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="30" lower="-2.617" upper="2.617" velocity="1.571"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+
+  <link name="link6">
+	<inertial>
+	  <mass value="1.128"/>
+	  <origin xyz="-0.000174 0.034708 1.40022"/>
+      <inertia ixx="0.001" ixy="-2.79e-06" ixz="5.78e-06" iyy="0.001" iyz="-6.67e-06" izz="0.001"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+		<mesh filename="m0609_collision/MF0609_6_0.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dr_gray"/>
+    </visual>
+  </link>
+<link name="robotiq_2f_85_base">
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0.055"/>
+      <inertia ixx="0.000190833333333" ixy="0" ixz="0" iyy="0.00018" iyz="0" izz="0.000190833333333"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-base.obj" scale="0.1 0.1 0.1"/>
+      </geometry>
+      <material name="Blanc"/>
+    </visual>
+    <!-- <collision>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-base.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision> -->
+  </link>
+  <joint name="gripper_joint" type="fixed">
+    <parent link="link6" />
+    <child link="robotiq_2f_85_base" />
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+    <!-- right finger -->
+  <link name="robotiq_2f_85_right_driver">
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0.055"/>
+      <inertia ixx="0.000190833333333" ixy="0" ixz="0" iyy="0.00018" iyz="0" izz="0.000190833333333"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-driver.obj" scale="0.1 0.1 0.1"/>
+      </geometry>
+      <material name="Blanc"/>
+    </visual>
+    <!-- <collision>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-driver.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision> -->
+  </link>
+  <joint name="robotiq_2f_85_right_driver_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0.0306011 0.054904"/>
+    <parent link="robotiq_2f_85_base"/>
+    <child link="robotiq_2f_85_right_driver"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="60" lower="0.0" upper="0.834" velocity="1.91986177778"/>
+  </joint>
+<link name="robotiq_2f_85_right_coupler">
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0.055"/>
+      <inertia ixx="0.000190833333333" ixy="0" ixz="0" iyy="0.00018" iyz="0" izz="0.000190833333333"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-coupler.obj" scale="0.1 0.1 0.1"/>
+      </geometry>
+      <material name="Blanc"/>
+    </visual>
+    <!-- <collision>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-coupler.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision> -->
+  </link>
+  <joint name="robotiq_2f_85_right_coupler_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0.0315 -0.0041"/>
+    <parent link="robotiq_2f_85_right_driver"/>
+    <child link="robotiq_2f_85_right_coupler"/>
+  </joint>
+<link name="robotiq_2f_85_right_follower">
+    <visual>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-follower.obj" scale="0.1 0.1 0.1"/>
+      </geometry>
+      <material name="Blanc"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-follower.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0.055"/>
+      <inertia ixx="0.000190833333333" ixy="0" ixz="0" iyy="0.00018" iyz="0" izz="0.000190833333333"/>
+    </inertial>
+  </link>
+  <joint name="robotiq_2f_85_right_follower_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0.0061 0.0471"/>
+    <parent link="robotiq_2f_85_right_coupler"/>
+    <child link="robotiq_2f_85_right_follower"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="176" lower="-2.96705911111" upper="2.96705911111" velocity="1.91986177778"/>
+    <mimic joint="robotiq_2f_85_right_driver_joint" multiplier="-1"/>
+  </joint>
+  <link name="robotiq_2f_85_right_pad">
+		<inertial>
+			<mass value="0.1"/>
+			<origin xyz="0 0 0.055"  />
+      <inertia ixx="0.00019" iyy="0.00018" izz="0.00019" ixy="0" iyz="0" ixz="0"/>
+		</inertial>
+		<visual>
+			<geometry>
+				<mesh filename="assets/gripper/robotiq-2f-pad.stl" scale="0.0001 0.0001 0.0001"/>
+			</geometry>
+      <material name="Blanc"/>
+		</visual>
+		<collision>
+			<geometry>
+				<mesh filename="assets/gripper/robotiq-2f-pad.stl" scale="0.001 0.001 0.001"/>
+			</geometry>
+		</collision>
+	</link>
+	<joint name="robotiq_2f_85_right_pad_joint" type="fixed">
+			<parent link="robotiq_2f_85_right_follower"/>
+			<child link="robotiq_2f_85_right_pad"/>
+	</joint>
+	<link name="robotiq_2f_85_right_spring_link">
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0.055"/>
+      <inertia ixx="0.000190833333333" ixy="0" ixz="0" iyy="0.00018" iyz="0" izz="0.000190833333333"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-spring_link.obj" scale="0.1 0.1 0.1"/>
+      </geometry>
+      <material name="Blanc"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-spring_link.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="robotiq_2f_85_right_spring_link_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0.012 0.0614"/>
+    <parent link="robotiq_2f_85_base"/>
+    <child link="robotiq_2f_85_right_spring_link"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="176" lower="-2.96705911111" upper="2.96705911111" velocity="1.91986177778"/>
+    <mimic joint="robotiq_2f_85_right_driver_joint" multiplier="1"/>
+  </joint>
+    <!-- left finger -->
+    <joint name="robotiq_2f_85_left_driver_joint" type="revolute">
+    <origin rpy="0 0 3.141592653589793" xyz="0 -0.0306011 0.054904"/>
+    <parent link="robotiq_2f_85_base"/>
+    <child link="robotiq_2f_85_left_driver"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="176" lower="0.0" upper="0.834" velocity="1.91986177778"/>
+    <mimic joint="robotiq_2f_85_right_driver_joint" multiplier="1"/>
+  </joint>
+  <link name="robotiq_2f_85_left_driver">
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0.055"/>
+      <inertia ixx="0.000190833333333" ixy="0" ixz="0" iyy="0.00018" iyz="0" izz="0.000190833333333"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-driver.obj" scale="0.1 0.1 0.1"/>
+      </geometry>
+      <material name="Blanc"/>
+    </visual>
+    <!-- <collision>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-driver.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision> -->
+  </link>
+  <joint name="robotiq_2f_85_left_coupler_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0.0315 -0.0041"/>
+    <parent link="robotiq_2f_85_left_driver"/>
+    <child link="robotiq_2f_85_left_coupler"/>
+  </joint>
+  <link name="robotiq_2f_85_left_coupler">
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0.055"/>
+      <inertia ixx="0.000190833333333" ixy="0" ixz="0" iyy="0.00018" iyz="0" izz="0.000190833333333"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-coupler.obj" scale="0.1 0.1 0.1"/>
+      </geometry>
+      <material name="Blanc"/>
+    </visual>
+    <!-- <collision>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-coupler.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision> -->
+  </link>
+  <joint name="robotiq_2f_85_left_follower_joint" type="revolute">
+    <origin rpy="0 0 0" xyz="0 0.0061 0.0471"/>
+    <parent link="robotiq_2f_85_left_coupler"/>
+    <child link="robotiq_2f_85_left_follower"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="176" lower="-2.96705911111" upper="2.96705911111" velocity="1.91986177778"/>
+    <mimic joint="robotiq_2f_85_right_driver_joint" multiplier="-1"/>
+  </joint>
+  <link name="robotiq_2f_85_left_follower">
+    <visual>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-follower.obj" scale="0.1 0.1 0.1"/>
+      </geometry>
+      <material name="Blanc"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-follower.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0.055"/>
+      <inertia ixx="0.000190833333333" ixy="0" ixz="0" iyy="0.00018" iyz="0" izz="0.000190833333333"/>
+    </inertial>
+  </link>
+  <joint name="robotiq_2f_85_left_pad_joint" type="fixed">
+			<parent link="robotiq_2f_85_left_follower"/>
+			<child link="robotiq_2f_85_left_pad"/>
+		</joint>
+		<link name="robotiq_2f_85_left_pad">
+			<inertial>
+				<mass value="0.1"/>
+				<origin xyz="0 0 0.055"  />
+				<inertia ixx="0.00019" iyy="0.00018" izz="0.00019" ixy="0" iyz="0" ixz="0"/>
+			</inertial>
+      <visual>
+        <geometry>
+          <mesh filename="assets/gripper/robotiq-2f-pad.stl" scale="0.0001 0.0001 0.0001"/>
+        </geometry>
+        <material name="Blanc"/>
+      </visual>
+			<collision>
+				<geometry>
+					<mesh filename="assets/gripper/robotiq-2f-pad.stl" scale="0.001 0.001 0.001"/>
+				</geometry>
+			</collision>
+		</link>
+		<joint name="robotiq_2f_85_left_spring_link_joint" type="revolute">
+    <origin rpy="0 0 3.141592653589793" xyz="0 -0.012 0.0614"/>
+    <parent link="robotiq_2f_85_base"/>
+    <child link="robotiq_2f_85_left_spring_link"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="176" lower="-2.96705911111" upper="2.96705911111" velocity="1.91986177778"/>
+    <mimic joint="robotiq_2f_85_right_driver_joint" multiplier="1"/>
+  </joint>
+  <link name="robotiq_2f_85_left_spring_link">
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0.055"/>
+      <inertia ixx="0.000190833333333" ixy="0" ixz="0" iyy="0.00018" iyz="0" izz="0.000190833333333"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-spring_link.obj" scale="0.1 0.1 0.1"/>
+      </geometry>
+      <material name="Blanc"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="assets/gripper/robotiq-2f-spring_link.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <transmission name="robotiq_2f_85_right_driver_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="robotiq_2f_85_right_driver_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="robotiq_2f_85_right_driver_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+ </robot>

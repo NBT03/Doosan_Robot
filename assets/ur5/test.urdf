@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<robot
+  name="Doosan_loz">
+   <link name="upper_arm_link">
+    <visual>
+      <geometry>
+        <mesh filename="visual/upperarm.stl"/>
+      </geometry>
+      <material name="LightGrey"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="collision/upperarm.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="8.393"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.28"/>
+      <inertia ixx="0.22689067591" ixy="0.0" ixz="0.0" iyy="0.22689067591" iyz="0.0" izz="0.0151074"/>
+    </inertial>
+  </link>
+  <joint name="elbow_joint" type="revolute">
+    <parent link="upper_arm_link"/>
+    <child link="forearm_link"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.1197 0.425"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="150.0" lower="-3.14159265359" upper="3.14159265359" velocity="3.15"/>
+    <dynamics damping="0.0" friction="0.0"/>
+  </joint>
+  <link name="forearm_link">
+    <visual>
+      <geometry>
+        <mesh filename="visual/forearm.stl"/>
+      </geometry>
+      <material name="DarkGrey"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="collision/forearm.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.275"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.25"/>
+      <inertia ixx="0.049443313556" ixy="0.0" ixz="0.0" iyy="0.049443313556" iyz="0.0" izz="0.004095"/>
+    </inertial>
+  </link>
+ </robot>
