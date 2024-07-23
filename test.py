@@ -1,55 +1,61 @@
 import pybullet as p
 import pybullet_data
+import numpy as np
 import time
 
 
-class RobotWithGripper:
-    def __init__(self, robot_urdf_path, gripper_urdf_path):
-        self.physicsClient = p.connect(p.GUI)
-        p.setAdditionalSearchPath(pybullet_data.getDataPath())
-        p.setGravity(0, 0, 0)
+def move_joints(robot_body_id, joint_indices, start_joint_state, end_joint_state, duration, speed=0.03):
+    """
+        Move robot arm from start_joint_state to end_joint_state over a given duration.
+    """
+    num_steps = int(duration / (1.0 / 240.0))  # 240 Hz simulation step rate
+    step_interval = duration / num_steps
+    joint_states = np.linspace(start_joint_state, end_joint_state, num_steps)
 
-        self.robot_urdf_path = robot_urdf_path
-        self.gripper_urdf_path = gripper_urdf_path
-        self.load_robot()
-        self.load_gripper()
-        self.create_constraint()
-
-    def load_robot(self):
-        self.robot_start_pose = [0, 0, 1]
-        self.robot_start_orientation = p.getQuaternionFromEuler([0, 0, 0])
-        self.robot_id = p.loadURDF(self.robot_urdf_path, self.robot_start_pose, self.robot_start_orientation)
-        p.loadURDF("plane.urdf")
-
-    def load_gripper(self):
-        self.gripper_start_pose = [0, 0, 1.2]
-        self.gripper_start_orientation = p.getQuaternionFromEuler([0, 0, 0])
-        self.gripper_id = p.loadURDF(self.gripper_urdf_path, self.gripper_start_pose, self.gripper_start_orientation)
-
-    def create_constraint(self):
-        # Get the number of joints in the robot to identify the end effector
-        num_joints = p.getNumJoints(self.robot_id)
-        print(f"Number of joints in the robot: {num_joints}")
-
-        # Assuming the end effector is the last joint
-        end_effector_link_index = 9
-
-        # Create a fixed constraint between the end effector of the robot and the base link of the gripper
-        p.createConstraint(
-            self.robot_id, end_effector_link_index,
-            self.gripper_id, 0,
-            p.JOINT_FIXED,
-            [0, 0, 0], [0, 0, 0.1], [0, 0, -0.05]
+    for state in joint_states:
+        p.setJointMotorControlArray(
+            robot_body_id, joint_indices,
+            p.POSITION_CONTROL, state,
+            positionGains=speed * np.ones(len(joint_indices))
         )
+        p.stepSimulation()
+        time.sleep(step_interval)
 
-    def run_simulation(self):
-        while True:
-            p.stepSimulation()
-            time.sleep(0.01)
+
+def main():
+    # Kết nối PyBullet với GUI
+    p.connect(p.GUI)
+    p.setAdditionalSearchPath(pybullet_data.getDataPath())
+    p.setGravity(0, 0, -9.8)
+
+    # Tải môi trường và robot
+    plane_id = p.loadURDF("plane.urdf")
+    robot_body_id = p.loadURDF("assets/ur5/doosan_origin.urdf", [0, 0, 0.4], p.getQuaternionFromEuler([0, 0, 0]))
+
+    # Lấy thông tin khớp robot
+    robot_joint_info = [p.getJointInfo(robot_body_id, i) for i in range(p.getNumJoints(robot_body_id))]
+    robot_joint_indices = [x[0] for x in robot_joint_info if x[2] == p.JOINT_REVOLUTE]
+
+    # Cấu hình khớp ban đầu và đích
+    robot_home_joint_config = [-np.pi / 2, 0, np.pi / 4, -np.pi / 4, np.pi / 3, 0]
+    robot_goal_joint_config = [np.pi / 3, -np.pi / 3, -np.pi / 4, np.pi / 4, -np.pi / 6, np.pi / 2]
+
+    # Vòng lặp chính để di chuyển giữa hai cấu hình
+    while True:
+        # Di chuyển khớp từ cấu hình ban đầu đến cấu hình đích
+        move_joints(robot_body_id, robot_joint_indices, robot_home_joint_config, robot_goal_joint_config, duration=5.0,
+                    speed=0.03)
+
+        # Tạm dừng để quan sát
+        time.sleep(2)
+
+        # Di chuyển khớp từ cấu hình đích trở về cấu hình ban đầu
+        move_joints(robot_body_id, robot_joint_indices, robot_goal_joint_config, robot_home_joint_config, duration=5.0,
+                    speed=0.03)
+
+        # Tạm dừng để quan sát
+        time.sleep(2)
 
 
 if __name__ == "__main__":
-    robot_urdf_path = "assets/ur5/ur5.urdf"  # Update this path
-    gripper_urdf_path = "assets/gripper/robotiq_2f_85.urdf"  # Update this path
-    robot_with_gripper = RobotWithGripper(robot_urdf_path, gripper_urdf_path)
-    robot_with_gripper.run_simulation()
+    main()

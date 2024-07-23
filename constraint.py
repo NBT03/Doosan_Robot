@@ -13,6 +13,7 @@ p.setGravity(0, 0, 0)
 #     print("Cách sử dụng: python3 test_urdf.py <đường dẫn tới file URDF>")
 #     exit(1)
 
+
 # Lấy đường dẫn file URDF từ dòng lệnh
 # urdf_path = sys.argv[1]
 
@@ -26,7 +27,7 @@ gripper_start_pose = [0.5, 0.1, 0.2]
 gripper_start_orientation = p.getQuaternionFromEuler([0, 0, 0])
 gripper_id = p.loadURDF(gripper_urdf_path)
 robot_end_effector_link_index = 5
-robot_tool_offset = [0, 0, 0]
+robot_tool_offset = [0, 0, -0.05]
 p.resetBasePositionAndOrientation(gripper_id, [
                                      0, 0, 0], p.getQuaternionFromEuler([np.pi, 0, 0]))
 p.createConstraint(robot_id, robot_end_effector_link_index, gripper_id, -1,
@@ -39,6 +40,18 @@ plane_id = p.loadURDF("plane.urdf")  # Load sàn hoặc giá
 p.createConstraint(
                 robot_id, -1, -1, -1, p.JOINT_FIXED,
                 [0, 0, 0], [0, 0, 0], [0, 0, 0.4])
+target_position = [5, 5, 0.5]  # Tọa độ mục tiêu (x, y, z)
 
+
+# Hàm để điều khiển robot đến tọa độ mục tiêu
+def move_to_target(robot_id, target_position):
+    num_joints = p.getNumJoints(robot_id)
+
+    # Giả sử robot có 6 khớp, thiết lập các giá trị khớp cần thiết
+    joint_positions = [0] * num_joints  # Thay đổi các giá trị này phù hợp với tọa độ mục tiêu
+
+    for i in range(num_joints):
+        p.setJointMotorControl2(robot_id, i, p.POSITION_CONTROL, joint_positions[i])
+move_to_target(robot_id, target_position)
 while True:
     p.stepSimulation()

@@ -2,48 +2,49 @@
 
 <robot
   name="Doosan_loz">
-   <link name="upper_arm_link">
+
+<link name="base_link">
     <visual>
       <geometry>
-        <mesh filename="visual/upperarm.stl"/>
+        <mesh filename="assets/ur5/visual/base.stl"/>
       </geometry>
       <material name="LightGrey"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="collision/upperarm.stl"/>
+      	<mesh filename="assets/ur5/visual/base.stl"/>
       </geometry>
     </collision>
     <inertial>
-      <mass value="8.393"/>
-      <origin rpy="0 0 0" xyz="0.0 0.0 0.28"/>
-      <inertia ixx="0.22689067591" ixy="0.0" ixz="0.0" iyy="0.22689067591" iyz="0.0" izz="0.0151074"/>
+      <mass value="4.0"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.00443333156" ixy="0.0" ixz="0.0" iyy="0.00443333156" iyz="0.0" izz="0.0072"/>
     </inertial>
   </link>
-  <joint name="elbow_joint" type="revolute">
-    <parent link="upper_arm_link"/>
-    <child link="forearm_link"/>
-    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.1197 0.425"/>
-    <axis xyz="0 1 0"/>
-    <limit effort="150.0" lower="-3.14159265359" upper="3.14159265359" velocity="3.15"/>
+  <joint name="shoulder_pan_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="shoulder_link"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.089159"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="150.0" lower="-6.28318530718" upper="6.28318530718" velocity="3.15"/>
     <dynamics damping="0.0" friction="0.0"/>
   </joint>
-  <link name="forearm_link">
+  <link name="shoulder_link">
     <visual>
       <geometry>
-        <mesh filename="visual/forearm.stl"/>
+        <mesh filename="assets/ur5/visual/shoulder.stl"/>
       </geometry>
       <material name="DarkGrey"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="collision/forearm.stl"/>
+        <mesh filename="assets/ur5/visual/shoulder.stl"/>
       </geometry>
     </collision>
     <inertial>
-      <mass value="2.275"/>
-      <origin rpy="0 0 0" xyz="0.0 0.0 0.25"/>
-      <inertia ixx="0.049443313556" ixy="0.0" ixz="0.0" iyy="0.049443313556" iyz="0.0" izz="0.004095"/>
+      <mass value="3.7"/>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+      <inertia ixx="0.010267495893" ixy="0.0" ixz="0.0" iyy="0.010267495893" iyz="0.0" izz="0.00666"/>
     </inertial>
   </link>
  </robot>
