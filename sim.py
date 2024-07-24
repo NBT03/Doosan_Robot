@@ -31,14 +31,14 @@ class PyBulletSim:
 
         # load UR5 robot
         self.robot_body_id = p.loadURDF(
-            "assets/ur5/ur5.urdf", [0, 0, 0.4], p.getQuaternionFromEuler([0, 0, 0]))
+            "assets/ur5/doosan_origin.urdf", [0, 0, 0.4], p.getQuaternionFromEuler([0, 0, 0]))
         self._mount_body_id = p.loadURDF(
             "assets/ur5/mount.urdf", [0, 0, 0.2], p.getQuaternionFromEuler([0, 0, 0]))
 
         # Placeholder for gripper body id
         self._gripper_body_id = None
-        self.robot_end_effector_link_index = 9
-        self._robot_tool_offset = [0, 0, -0.05]
+        self.robot_end_effector_link_index = 7
+        self._robot_tool_offset = [0, 0, 0]
         # Distance between tool tip and end-effector joint
         self._tool_tip_to_ee_joint = np.array([0, 0, 0.15])
 
@@ -134,8 +134,8 @@ class PyBulletSim:
         p.resetBasePositionAndOrientation(self._gripper_body_id, [
                                           0.5, 0.1, 0.2], p.getQuaternionFromEuler([np.pi, 0, 0]))
 
-        p.createConstraint(self.robot_body_id, self.robot_end_effector_link_index, self._gripper_body_id, 0, jointType=p.JOINT_FIXED, jointAxis=[
-                           0, 0, 0], parentFramePosition=[0, 0, 0], childFramePosition=self._robot_tool_offset, childFrameOrientation=p.getQuaternionFromEuler([0, 0, np.pi/2]))
+        p.createConstraint(self.robot_body_id, self.robot_end_effector_link_index, self._gripper_body_id, -1, jointType=p.JOINT_FIXED, jointAxis=[
+                           0, 0, 0], parentFramePosition=[0, 0, 0], childFramePosition=self._robot_tool_offset, childFrameOrientation=p.getQuaternionFromEuler([0, 0, 0]))
 
         # Set friction coefficients for gripper fingers
         for i in range(p.getNumJoints(self._gripper_body_id)):
@@ -272,7 +272,7 @@ class PyBulletSim:
                     ],
                     positionGains=np.ones(5)
                 )
-            # time.sleep(1e-3)
+            time.sleep(1e-3)
 
     def reset_objects(self):
         for object_body_id in self._objects_body_ids:
@@ -374,4 +374,12 @@ def get_tableau_palette():
         dtype=np.cfloat
     )
     return palette / 255.
+if __name__ == "__main__":
+    sim = PyBulletSim(gui=True)
+    sim.load_gripper()
+    sim.execute_grasp(grasp_position=[0.5, 0.0, 0.1], grasp_angle=np.pi/4)
+    sim.execute_place()
+    time.sleep(5)  # Để quan sát kết quả
+    p.disconnect()
+
 

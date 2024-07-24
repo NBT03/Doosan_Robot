@@ -26,8 +26,8 @@ gripper_urdf_path = "assets/gripper/robotiq_2f_85.urdf"
 gripper_start_pose = [0.5, 0.1, 0.2]
 gripper_start_orientation = p.getQuaternionFromEuler([0, 0, 0])
 gripper_id = p.loadURDF(gripper_urdf_path)
-robot_end_effector_link_index = 5
-robot_tool_offset = [0, 0, -0.05]
+robot_end_effector_link_index = 7
+robot_tool_offset = [0, 0, 0]
 p.resetBasePositionAndOrientation(gripper_id, [
                                      0, 0, 0], p.getQuaternionFromEuler([np.pi, 0, 0]))
 p.createConstraint(robot_id, robot_end_effector_link_index, gripper_id, -1,
