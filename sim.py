@@ -9,6 +9,7 @@ class PyBulletSim:
     PyBulletSim: Implements two tote UR5 simulation environment with obstacles for grasping 
         and manipulation
     """
+
     def __init__(self, use_random_objects=False, object_shapes=None, gui=True):
         # 3D workspace for tote 1
         self._workspace1_bounds = np.array([
@@ -27,7 +28,7 @@ class PyBulletSim:
             p.connect(p.DIRECT)
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         self._plane_id = p.loadURDF("plane.urdf")
-        p.setGravity(0, 0, -9.8) #set trong luc
+        p.setGravity(0, 0, -9.8)
 
         # load UR5 robot
         self.robot_body_id = p.loadURDF(
@@ -37,7 +38,7 @@ class PyBulletSim:
 
         # Placeholder for gripper body id
         self._gripper_body_id = None
-        self.robot_end_effector_link_index = 7
+        self.robot_end_effector_link_index = 9
         self._robot_tool_offset = [0, 0, 0]
         # Distance between tool tip and end-effector joint
         self._tool_tip_to_ee_joint = np.array([0, 0, 0.15])
@@ -53,26 +54,27 @@ class PyBulletSim:
 
         # Robot home joint configuration (over tote 1)
         self.robot_home_joint_config = [-np.pi, -
-                                        np.pi/2, np.pi/2, -np.pi/2, -np.pi/2, 0]
+        np.pi / 2, np.pi / 2, -np.pi / 2, -np.pi / 2, 0]
         # Robot goal joint configuration (over tote 2)
         self.robot_goal_joint_config = [
-            0, -np.pi/2, np.pi/2, -np.pi/2, -np.pi/2, 0]
+            0, -np.pi / 2, np.pi / 2, -np.pi / 2, -np.pi / 2, 0]
 
-        self.move_joints(self.robot_home_joint_config, speed=1.0)
-
+        self.move_joints(self.robot_home_joint_config, duration=2)
 
         # Load totes and fix them to their position
         self._tote1_position = (
-            self._workspace1_bounds[:, 0] + self._workspace1_bounds[:, 1]) / 2
+                                       self._workspace1_bounds[:, 0] + self._workspace1_bounds[:, 1]) / 2
         self._tote1_position[2] = 0.01
         self._tote1_body_id = p.loadURDF(
-            "assets/tote/toteA_large.urdf", self._tote1_position, p.getQuaternionFromEuler([0, 0, 0]), useFixedBase=True)
+            "assets/tote/toteA_large.urdf", self._tote1_position, p.getQuaternionFromEuler([0, 0, 0]),
+            useFixedBase=True)
 
         self._tote2_position = (
-            self._workspace2_bounds[:, 0] + self._workspace2_bounds[:, 1]) / 2
+                                       self._workspace2_bounds[:, 0] + self._workspace2_bounds[:, 1]) / 2
         self._tote2_position[2] = 0.01
         self._tote2_body_id = p.loadURDF(
-            "assets/tote/toteA_large.urdf", self._tote2_position, p.getQuaternionFromEuler([0, 0, 0]), useFixedBase=True)
+            "assets/tote/toteA_large.urdf", self._tote2_position, p.getQuaternionFromEuler([0, 0, 0]),
+            useFixedBase=True)
 
         # Load objects
         # - possible object colors
@@ -92,7 +94,7 @@ class PyBulletSim:
             i % len(self._object_shapes) for i in range(self._num_objects)]
         self._objects_body_ids = []
         for i in range(self._num_objects):
-            object_body_id = p.loadURDF(self._object_shapes[i], [ 0.5, 0.1, 0.1], p.getQuaternionFromEuler([0, 0, 0]))
+            object_body_id = p.loadURDF(self._object_shapes[i], [0.5, 0.1, 0.1], p.getQuaternionFromEuler([0, 0, 0]))
             self._objects_body_ids.append(object_body_id)
             p.changeVisualShape(object_body_id, -1, rgbaColor=[*self._object_colors[i], 1])
         self.reset_objects()
@@ -132,10 +134,12 @@ class PyBulletSim:
         # - We use createConstraint to add a fixed constraint between the ur5 robot and gripper.
         self._gripper_body_id = p.loadURDF("assets/gripper/robotiq_2f_85.urdf")
         p.resetBasePositionAndOrientation(self._gripper_body_id, [
-                                          0.5, 0.1, 0.2], p.getQuaternionFromEuler([np.pi, 0, 0]))
+            0.5, 0.1, 0.2], p.getQuaternionFromEuler([np.pi, 0, 0]))
 
-        p.createConstraint(self.robot_body_id, self.robot_end_effector_link_index, self._gripper_body_id, -1, jointType=p.JOINT_FIXED, jointAxis=[
-                           0, 0, 0], parentFramePosition=[0, 0, 0], childFramePosition=self._robot_tool_offset, childFrameOrientation=p.getQuaternionFromEuler([0, 0, 0]))
+        p.createConstraint(self.robot_body_id, self.robot_end_effector_link_index, self._gripper_body_id, -1,
+                           jointType=p.JOINT_FIXED, jointAxis=[
+                0, 0, 0], parentFramePosition=[0, 0, 0], childFramePosition=self._robot_tool_offset,
+                           childFrameOrientation=p.getQuaternionFromEuler([0, 0, np.pi / 2]))
 
         # Set friction coefficients for gripper fingers
         for i in range(p.getNumJoints(self._gripper_body_id)):
@@ -143,40 +147,21 @@ class PyBulletSim:
                              rollingFriction=0.0001, frictionAnchor=True)
         self.step_simulation(1e3)
 
-    def move_joints(self, target_joint_state, speed=0.03):
-        """
-            Move robot arm to specified joint configuration by appropriate motor control
-        """
-        assert len(self._robot_joint_indices) == len(target_joint_state)
-        p.setJointMotorControlArray(
-            self.robot_body_id, self._robot_joint_indices,
-            p.POSITION_CONTROL, target_joint_state,
-            positionGains=speed * np.ones(len(self._robot_joint_indices))
-        )
-
-        timeout_t0 = time.time()
+    def move_joints(self, target_joint_positions, duration=1):
+        start_joint_positions = [p.getJointState(self.robot_body_id, i)[0] for i in self._robot_joint_indices]
+        t0 = time.time()
         while True:
-            # Keep moving until joints reach the target configuration
-            current_joint_state = [
-                p.getJointState(self.robot_body_id, i)[0]
-                for i in self._robot_joint_indices
-            ]
-            if all([
-                np.abs(
-                    current_joint_state[i] - target_joint_state[i]) < self._joint_epsilon
-                for i in range(len(self._robot_joint_indices))
-            ]):
+            elapsed_time = time.time() - t0
+            alpha = min(elapsed_time / duration, 1.0)
+            new_joint_positions = [start + alpha * (target - start) for start, target in
+                                   zip(start_joint_positions, target_joint_positions)]
+            p.setJointMotorControlArray(self.robot_body_id, self._robot_joint_indices, p.POSITION_CONTROL,
+                                        new_joint_positions,
+                                        positionGains=np.ones(len(self._robot_joint_indices)))
+            if alpha >= 1.0:
                 break
-            if time.time()-timeout_t0 > 10:
-                print(
-                    "Timeout: robot is taking longer than 10s to reach the target joint state. Skipping...")
-                p.setJointMotorControlArray(
-                    self.robot_body_id, self._robot_joint_indices,
-                    p.POSITION_CONTROL, self.robot_home_joint_config,
-                    positionGains=np.ones(len(self._robot_joint_indices))
-                )
-                break
-            self.step_simulation(1)
+            p.stepSimulation()
+            time.sleep(1. / 240.)
 
     def move_tool(self, position, orientation, speed=0.03):
         """
@@ -188,8 +173,8 @@ class PyBulletSim:
         # ========= Part 1 ========
         # Using inverse kinematics (p.calculateInverseKinematics), find out the target joint configuration of the robot
         # in order to reach the desired end_effector position and orientation
-        # HINT: p.calculateInverseKinematics takes in the end effector **link index** and not the **joint index**. You can use 
-        #   self.robot_end_effector_link_index for this 
+        # HINT: p.calculateInverseKinematics takes in the end effector **link index** and not the **joint index**. You can use
+        #   self.robot_end_effector_link_index for this
         # HINT: You might want to tune optional parameters of p.calculateInverseKinematics for better performance
         # ===============================
         target_joint_state = p.calculateInverseKinematics(self.robot_body_id,
@@ -199,7 +184,7 @@ class PyBulletSim:
         self.move_joints(target_joint_state)
 
     def robot_go_home(self, speed=0.1):
-        self.move_joints(self.robot_home_joint_config, speed)
+        self.move_joints(self.robot_home_joint_config, duration=2)
 
     def close_gripper(self):
         p.setJointMotorControl2(
@@ -218,15 +203,15 @@ class PyBulletSim:
         """
             Execute grasp sequence
             @param: grasp_position: 3d position of place where the gripper jaws will be closed
-            @param: grasp_angle: angle of gripper before executing grasp from positive x axis in radians 
+            @param: grasp_angle: angle of gripper before executing grasp from positive x axis in radians
         """
         # Adjust grasp_position to account for end-effector length
         grasp_position = grasp_position + self._tool_tip_to_ee_joint
         gripper_orientation = p.getQuaternionFromEuler(
             [np.pi, 0, grasp_angle])
-        pre_grasp_position_over_bin = grasp_position+np.array([0, 0, 0.3])
-        pre_grasp_position_over_object = grasp_position+np.array([0, 0, 0.1])
-        post_grasp_position = grasp_position+np.array([0, 0, 0.3])
+        pre_grasp_position_over_bin = grasp_position + np.array([0, 0, 0.3])
+        pre_grasp_position_over_object = grasp_position + np.array([0, 0, 0.1])
+        post_grasp_position = grasp_position + np.array([0, 0, 0.3])
         grasp_success = False
         # ========= PART 2============
         # Implement the following grasp sequence:
@@ -251,7 +236,7 @@ class PyBulletSim:
 
     def execute_place(self, place_angle=90.):
         gripper_orientation = p.getQuaternionFromEuler(
-            [np.pi, 0, ((place_angle+180.) % 360-180.)*np.pi/180.])
+            [np.pi, 0, ((place_angle + 180.) % 360. - 180.) * np.pi / 180.])
         place_position = np.array([0.4, -0.65, 0.4])
         self.move_tool(place_position, gripper_orientation, speed=0.01)
         self.open_gripper()
@@ -262,7 +247,7 @@ class PyBulletSim:
             if self._gripper_body_id is not None:
                 # Constraints
                 gripper_joint_positions = np.array([p.getJointState(self._gripper_body_id, i)[
-                                                0] for i in range(p.getNumJoints(self._gripper_body_id))])
+                                                        0] for i in range(p.getNumJoints(self._gripper_body_id))])
                 p.setJointMotorControlArray(
                     self._gripper_body_id, [6, 3, 8, 5, 10], p.POSITION_CONTROL,
                     [
@@ -272,13 +257,13 @@ class PyBulletSim:
                     ],
                     positionGains=np.ones(5)
                 )
-            time.sleep(1e-3)
+            # time.sleep(1e-3)
 
     def reset_objects(self):
         for object_body_id in self._objects_body_ids:
-            random_position = np.random.random_sample((3))*(self._workspace1_bounds[:, 1]-(
-                self._workspace1_bounds[:, 0]+0.1))+self._workspace1_bounds[:, 0]+0.1
-            random_orientation = np.random.random_sample((3))*2*np.pi-np.pi
+            random_position = np.random.random_sample((3)) * (self._workspace1_bounds[:, 1] - (
+                    self._workspace1_bounds[:, 0] + 0.1)) + self._workspace1_bounds[:, 0] + 0.1
+            random_orientation = np.random.random_sample((3)) * 2 * np.pi - np.pi
             p.resetBasePositionAndOrientation(
                 object_body_id, random_position, p.getQuaternionFromEuler(random_orientation))
         self.step_simulation(2e2)
@@ -319,11 +304,11 @@ class SphereMarker:
             self.debug_item_ids.append(
                 p.addUserDebugText(text, position + radius)
             )
-        
+
         if orientation is not None:
             # x axis
             axis_size = 2 * radius
-            rotation_mat = np.asarray(p.getMatrixFromQuaternion(orientation)).reshape(3,3)
+            rotation_mat = np.asarray(p.getMatrixFromQuaternion(orientation)).reshape(3, 3)
 
             # x axis
             x_end = np.array([[axis_size, 0, 0]]).transpose()
@@ -374,12 +359,3 @@ def get_tableau_palette():
         dtype=np.cfloat
     )
     return palette / 255.
-if __name__ == "__main__":
-    sim = PyBulletSim(gui=True)
-    sim.load_gripper()
-    sim.execute_grasp(grasp_position=[0.5, 0.0, 0.1], grasp_angle=np.pi/4)
-    sim.execute_place()
-    time.sleep(5)  # Để quan sát kết quả
-    p.disconnect()
-
-

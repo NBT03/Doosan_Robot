@@ -200,7 +200,7 @@ if __name__ == "__main__":
                 env.set_joint_positions(env.robot_home_joint_config)
                 markers = []
                 for joint_state in path_conf:
-                    env.move_joints(joint_state, speed=0.05)
+                    env.move_joints(joint_state, duration=2)
                     link_state = p.getLinkState(env.robot_body_id, env.robot_end_effector_link_index)
                     markers.append(sim.SphereMarker(link_state[0], radius=0.02))
 
@@ -218,7 +218,7 @@ if __name__ == "__main__":
                 # ===============================================================================
                 # ===============================================================================
                 for joint_state in reversed(path_conf):
-                    env.move_joints(joint_state, speed=0.1)
+                    env.move_joints(joint_state, speed=0.005)
                 # remove markers
                 markers = None
             p.removeAllUserDebugItems()
